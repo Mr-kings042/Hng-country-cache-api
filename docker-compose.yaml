@@ -14,17 +14,17 @@ services:
       # Persist cache image and sqlite DB on host
       - ./cache:/app/cache
     restart: unless-stopped
-  # Wait for DB to be ready before starting the app (script available in the image via project mount)
-  command: sh -c "python /app/scripts/wait_for_db.py && uvicorn main:app --host 0.0.0.0 --port 8000"
+    # start uvicorn directly in the container; use compose networking for DB
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
     depends_on:
       - db
     environment:
       # App can use these to construct a MySQL connection string if you want
-      - DATABASE_HOST=db
-      - DATABASE_PORT=3306
-      - DATABASE_USER=${MYSQL_USER:-user}
-      - DATABASE_PASSWORD=${MYSQL_PASSWORD:-password}
-      - DATABASE_NAME=${MYSQL_DATABASE:-countries}
+      DATABASE_HOST: "${DATABASE_HOST:-db}"
+      DATABASE_PORT: "${DATABASE_PORT:-3306}"
+      DATABASE_USER: "${MYSQL_USER:-user}"
+      DATABASE_PASSWORD: "${MYSQL_PASSWORD:-password}"
+      DATABASE_NAME: "${MYSQL_DATABASE:-countries}"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://127.0.0.1:8000/ || exit 1"]
       interval: 30s
@@ -50,3 +50,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+volumes:
+  db_data:
+    driver: local
