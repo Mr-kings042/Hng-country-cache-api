@@ -197,16 +197,4 @@ Base URL: `/`
 - `Can't connect to MySQL server on 'db'`: means your process cannot resolve the hostname `db`. Use docker-compose (the service name `db` is only resolvable inside the compose network) or set `DATABASE_URL` to a reachable address when running locally.
 - If `/countries/refresh` fails with 503, check logs for which external API failed and re-run. External APIs may be rate-limited or temporarily unavailable.
 
-## Contributing
-
-If you make changes, run linting/tests (if added) and consider adding a lightweight unit test for the refresh flow.
-
----
-
-If you want, I can also add:
-- an `.env.example` file with recommended variables,
-- a small startup retry in `main.py` to tolerate DB initialization delays,
-- or an automated `requirements.txt` update.
-
-Enjoy working with the Countries Cache API!
 
