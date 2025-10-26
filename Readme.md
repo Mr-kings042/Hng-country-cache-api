@@ -9,7 +9,11 @@ This README covers: setup, running locally, Docker, environment variables, depen
 - Python 3.10+
 - (For local dev) `venv` or other virtual environment
 - Docker & Docker Compose (for containerized MySQL and running the app in a container)
-
+## Setting up
+```bash
+git clone https://github.com/Mr-kings042/Hng-country-cache-api.git
+cd Hng-country-cache-api
+```
 ## Dependencies
 
 The project uses these main Python packages:
