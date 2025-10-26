@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    # Development override: run with reload and small env tweak
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - PYTHONUNBUFFERED=1
+    # Keep the same mounts so local changes are reflected into the container
+    volumes:
+      - ./:/app:cached
+      - ./cache:/app/cache
+      - ./countries.db:/app/countries.db

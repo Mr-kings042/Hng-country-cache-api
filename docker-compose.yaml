@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: country-api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount project for quick iteration (dev). Remove for production.
+      - ./:/app:cached
+      # Persist cache image and sqlite DB on host
+      - ./cache:/app/cache
+    restart: unless-stopped
+  # Wait for DB to be ready before starting the app (script available in the image via project mount)
+  command: sh -c "python /app/scripts/wait_for_db.py && uvicorn main:app --host 0.0.0.0 --port 8000"
+    depends_on:
+      - db
+    environment:
+      # App can use these to construct a MySQL connection string if you want
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_USER=${MYSQL_USER:-user}
+      - DATABASE_PASSWORD=${MYSQL_PASSWORD:-password}
+      - DATABASE_NAME=${MYSQL_DATABASE:-countries}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:8000/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  db:
+    image: mysql:8.0
+    container_name: country-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-countries}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      # mysqladmin ping returns 0 when MySQL is ready
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -P 3306 --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

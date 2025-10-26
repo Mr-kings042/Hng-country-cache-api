@@ -1,0 +1,7 @@
+.env
+__pycache__
+countries.db
+venv
+venv/
+app.log
+countries.db

@@ -1,0 +1,38 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtualenvs
+venv/
+.venv/
+env/
+ENV/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# SQLite DB and cache (persist outside image)
+countries.db
+cache/
+
+# Environment files
+.env
+*.env
+
+# Docker / editor / OS
+.dockerignore
+.git
+.gitignore
+.vscode/
+.idea/
+.DS_Store
+
+# Tests and coverage
+.pytest_cache/
+coverage.xml
+app.log
+countries.db
+venv
